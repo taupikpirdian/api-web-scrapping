@@ -1,6 +1,121 @@
-# API Web Scrapping - Go DDD Project
+# API Web Scrapping - Stock Price Summary API
 
-Clean Architecture Go project with DDD (Domain-Driven Design) implementation.
+A RESTful API for managing and querying stock price summary data (OHLC) built with Go and PostgreSQL.
+
+## Features
+
+- ✅ Clean Architecture (Domain, Application, Infrastructure, Presentation layers)
+- ✅ Stock price summary CRUD operations
+- ✅ Query by symbol, date range, pagination
+- ✅ Top gainers & losers endpoint
+- ✅ PostgreSQL database with migrations
+- ✅ Docker support for easy deployment
+- ✅ Comprehensive API documentation
+- ✅ JWT Authentication
+
+## Tech Stack
+
+- **Go 1.21** - Programming language
+- **Gin** - HTTP web framework
+- **PostgreSQL** - Database
+- **lib/pq** - PostgreSQL driver
+- **Docker** - Containerization
+
+## Prerequisites
+
+- Go 1.21 or higher
+- PostgreSQL 12 or higher
+- Docker and Docker Compose (optional, for containerized database)
+
+## Quick Start
+
+### 1. Setup Database
+
+```bash
+# Start PostgreSQL container
+make db-up
+
+# Run migrations
+make db-migrate
+
+# Verify database is running
+make db-logs
+```
+
+### 2. Configure Environment
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Edit .env if needed (defaults work for local development)
+nano .env
+```
+
+### 3. Install Dependencies
+
+```bash
+go mod download
+go mod tidy
+```
+
+### 4. Run the Application
+
+```bash
+# Run directly
+go run cmd/api/main.go
+
+# Or build and run
+go build -o main cmd/api/main.go
+./main
+```
+
+The API will start on `http://localhost:8080`
+
+### 5. Test the API
+
+```bash
+# Health check
+curl http://localhost:8080/health
+
+# Get all stock prices
+curl http://localhost:8080/api/v1/stock-prices
+
+# Get latest price for BBCA
+curl http://localhost:8080/api/v1/stock-prices/symbol/BBCA/latest
+
+# Get top movers for today
+curl http://localhost:8080/api/v1/stock-prices/movers/2026-01-19
+```
+
+## Available Endpoints
+
+### Stock Price Summary
+
+- `GET /api/v1/stock-prices` - Get all stock prices with pagination
+- `GET /api/v1/stock-prices/:id` - Get stock price by ID
+- `GET /api/v1/stock-prices/symbol/:symbol` - Get prices by symbol
+- `GET /api/v1/stock-prices/symbol/:symbol/latest` - Get latest price by symbol
+- `GET /api/v1/stock-prices/symbol/:symbol/date/:date` - Get price by symbol and date
+- `GET /api/v1/stock-prices/range` - Get prices by date range
+- `GET /api/v1/stock-prices/symbol/:symbol/range` - Get symbol prices by date range
+- `GET /api/v1/stock-prices/movers/:date` - Get top gainers & losers
+- `POST /api/v1/stock-prices` - Create stock price summary
+- `PUT /api/v1/stock-prices/:id` - Update stock price summary
+- `DELETE /api/v1/stock-prices/:id` - Delete stock price summary
+
+### Authentication
+
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration
+
+### Health Check
+
+- `GET /health` - API health status
+
+See [API.md](API.md) for detailed API documentation.
+
+## Project Structure
 
 ## Project Structure
 
