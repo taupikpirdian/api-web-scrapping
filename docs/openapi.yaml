@@ -138,12 +138,6 @@ components:
           type: number
         close_price:
           type: number
-        volume:
-          type: integer
-        value:
-          type: number
-        frequency:
-          type: integer
         date:
           type: string
           format: date-time

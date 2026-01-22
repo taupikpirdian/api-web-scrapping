@@ -11,11 +11,8 @@ type MarketData struct {
 	OpenPrice      float64    `json:"open_price" db:"open_price"`
 	HighPrice      float64    `json:"high_price" db:"high_price"`
 	LowPrice       float64    `json:"low_price" db:"low_price"`
-	ClosePrice     float64    `json:"close_price" db:"close_price"`
-	Volume         int64      `json:"volume" db:"volume"`
-	Value          float64    `json:"value" db:"value"`
-	Frequency      int        `json:"frequency" db:"frequency"`
-	Date           time.Time  `json:"date" db:"date"`
+	ClosePrice     float64    `json:"close_price" db:"last_price"`
+	Date           time.Time  `json:"date" db:"date_time_scraping"`
 	CreatedAt      time.Time  `json:"created_at" db:"created_at"`
 	UpdatedAt      time.Time  `json:"updated_at" db:"updated_at"`
 	DeletedAt      *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`

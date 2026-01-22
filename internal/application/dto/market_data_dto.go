@@ -10,9 +10,6 @@ type MarketDataResponse struct {
 	HighPrice  float64    `json:"high_price"`
 	LowPrice   float64    `json:"low_price"`
 	ClosePrice float64    `json:"close_price"`
-	Volume     int64      `json:"volume"`
-	Value      float64    `json:"value"`
-	Frequency  int        `json:"frequency"`
 	Date       time.Time  `json:"date"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`

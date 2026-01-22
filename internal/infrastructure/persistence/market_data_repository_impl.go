@@ -18,8 +18,8 @@ func NewMarketDataRepository(db *sql.DB) repositories.MarketDataRepository {
 // GetAll retrieves all market data from the view
 func (r *marketDataRepositoryImpl) GetAll() ([]entities.MarketData, error) {
 	query := `
-		SELECT id, emiten, open_price, high_price, low_price, close_price,
-		       volume, value, frequency, date, created_at, updated_at, deleted_at
+		SELECT id, emiten, open_price, high_price, low_price, last_price,
+		       date_time_scraping, created_at, updated_at, deleted_at
 		FROM v_latest_market_data
 		ORDER BY emiten
 	`
@@ -40,9 +40,6 @@ func (r *marketDataRepositoryImpl) GetAll() ([]entities.MarketData, error) {
 			&md.HighPrice,
 			&md.LowPrice,
 			&md.ClosePrice,
-			&md.Volume,
-			&md.Value,
-			&md.Frequency,
 			&md.Date,
 			&md.CreatedAt,
 			&md.UpdatedAt,
@@ -60,11 +57,11 @@ func (r *marketDataRepositoryImpl) GetAll() ([]entities.MarketData, error) {
 // GetByEmiten retrieves market data for a specific emiten
 func (r *marketDataRepositoryImpl) GetByEmiten(emiten string) ([]entities.MarketData, error) {
 	query := `
-		SELECT id, emiten, open_price, high_price, low_price, close_price,
-		       volume, value, frequency, date, created_at, updated_at, deleted_at
+		SELECT id, emiten, open_price, high_price, low_price, last_price,
+		       date_time_scraping, created_at, updated_at, deleted_at
 		FROM v_latest_market_data
-		WHERE emiten = $1
-		ORDER BY date DESC
+		WHERE emiten = ?
+		ORDER BY date_time_scraping DESC
 	`
 
 	rows, err := r.db.Query(query, emiten)
@@ -83,9 +80,6 @@ func (r *marketDataRepositoryImpl) GetByEmiten(emiten string) ([]entities.Market
 			&md.HighPrice,
 			&md.LowPrice,
 			&md.ClosePrice,
-			&md.Volume,
-			&md.Value,
-			&md.Frequency,
 			&md.Date,
 			&md.CreatedAt,
 			&md.UpdatedAt,
@@ -103,10 +97,10 @@ func (r *marketDataRepositoryImpl) GetByEmiten(emiten string) ([]entities.Market
 // GetLatestByEmiten retrieves the latest market data for a specific emiten
 func (r *marketDataRepositoryImpl) GetLatestByEmiten(emiten string) (*entities.MarketData, error) {
 	query := `
-		SELECT id, emiten, open_price, high_price, low_price, close_price,
-		       volume, value, frequency, date, created_at, updated_at, deleted_at
+		SELECT id, emiten, open_price, high_price, low_price, last_price,
+		       date_time_scraping, created_at, updated_at, deleted_at
 		FROM v_latest_market_data
-		WHERE emiten = $1
+		WHERE emiten = ?
 		LIMIT 1
 	`
 
@@ -118,9 +112,6 @@ func (r *marketDataRepositoryImpl) GetLatestByEmiten(emiten string) (*entities.M
 		&md.HighPrice,
 		&md.LowPrice,
 		&md.ClosePrice,
-		&md.Volume,
-		&md.Value,
-		&md.Frequency,
 		&md.Date,
 		&md.CreatedAt,
 		&md.UpdatedAt,
@@ -140,8 +131,8 @@ func (r *marketDataRepositoryImpl) GetLatestByEmiten(emiten string) (*entities.M
 // GetLatestByAllEmiten retrieves the latest market data for all emitens
 func (r *marketDataRepositoryImpl) GetLatestByAllEmiten() ([]entities.MarketData, error) {
 	query := `
-		SELECT id, emiten, open_price, high_price, low_price, close_price,
-		       volume, value, frequency, date, created_at, updated_at, deleted_at
+		SELECT id, emiten, open_price, high_price, low_price, last_price,
+		       date_time_scraping, created_at, updated_at, deleted_at
 		FROM v_latest_market_data
 		ORDER BY emiten
 	`
@@ -162,9 +153,6 @@ func (r *marketDataRepositoryImpl) GetLatestByAllEmiten() ([]entities.MarketData
 			&md.HighPrice,
 			&md.LowPrice,
 			&md.ClosePrice,
-			&md.Volume,
-			&md.Value,
-			&md.Frequency,
 			&md.Date,
 			&md.CreatedAt,
 			&md.UpdatedAt,

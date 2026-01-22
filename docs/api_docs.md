@@ -47,9 +47,6 @@ Get all market data from view.
     "high_price": 9300,
     "low_price": 9150,
     "close_price": 9250,
-    "volume": 1000000,
-    "value": 9250000000,
-    "frequency": 5000,
     "date": "2026-01-19T00:00:00Z",
     "created_at": "...",
     "updated_at": "..."
