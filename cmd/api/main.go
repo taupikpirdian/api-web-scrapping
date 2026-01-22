@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,13 +20,13 @@ func main() {
 	cfg := config.LoadConfig()
 
 	// Initialize database connection
+	port, _ := strconv.Atoi(cfg.Database.Port)
 	dbConfig := &database.Config{
 		Host:     cfg.Database.Host,
-		Port:     5432, // Default PostgreSQL port
+		Port:     port,
 		User:     cfg.Database.User,
 		Password: cfg.Database.Password,
 		DBName:   cfg.Database.Database,
-		SSLMode:  cfg.Database.SSLMode,
 	}
 
 	db, err := database.NewConnection(dbConfig)
@@ -40,16 +41,16 @@ func main() {
 	jwtManager := auth.NewJWTManager(cfg.Auth.JWTSecret, cfg.Auth.TokenDuration)
 	userRepo := persistence.NewInMemoryUserRepository()
 
-	// Initialize stock price summary repository
-	stockPriceSummaryRepo := persistence.NewStockPriceSummaryRepository(db)
+	// Initialize market data repository
+	marketDataRepo := persistence.NewMarketDataRepository(db)
 
 	// Initialize use cases
 	authUseCase := usecases.NewAuthUseCase(userRepo, jwtManager)
-	stockPriceSummaryUseCase := usecases.NewStockPriceSummaryUseCase(stockPriceSummaryRepo)
+	marketDataUseCase := usecases.NewMarketDataUseCase(marketDataRepo)
 
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(authUseCase)
-	stockPriceSummaryHandler := handlers.NewStockPriceSummaryHandler(stockPriceSummaryUseCase)
+	marketDataHandler := handlers.NewMarketDataHandler(marketDataUseCase)
 
 	// Setup Gin
 	if cfg.Auth.JWTSecret == "your-secret-key-change-in-production" {
@@ -60,7 +61,7 @@ func main() {
 	r := gin.Default()
 
 	// Setup routes
-	routes.SetupRoutes(r, authHandler, stockPriceSummaryHandler)
+	routes.SetupRoutes(r, authHandler, marketDataHandler)
 
 	// Start server
 	log.Printf("Starting server on %s", cfg.Server.Port)

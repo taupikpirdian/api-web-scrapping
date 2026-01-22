@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: API Web Scrapping
+  description: API for stock price summaries and market data.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local server
+paths:
+  /auth/login:
+    post:
+      summary: Login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+
+  /market-data:
+    get:
+      summary: Get all market data
+      tags: [Market Data]
+      responses:
+        '200':
+          description: List of market data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketData'
+
+  /market-data/latest:
+    get:
+      summary: Get latest market data for all emitens
+      tags: [Market Data]
+      responses:
+        '200':
+          description: List of latest market data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketData'
+
+  /market-data/emiten/{emiten}:
+    get:
+      summary: Get market data by emiten
+      tags: [Market Data]
+      parameters:
+        - in: path
+          name: emiten
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of market data for emiten
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketData'
+
+  /market-data/emiten/{emiten}/latest:
+    get:
+      summary: Get latest market data by emiten
+      tags: [Market Data]
+      parameters:
+        - in: path
+          name: emiten
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Latest market data for emiten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketData'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        full_name:
+          type: string
+    
+    MarketData:
+      type: object
+      properties:
+        id:
+          type: integer
+        emiten:
+          type: string
+        open_price:
+          type: number
+        high_price:
+          type: number
+        low_price:
+          type: number
+        close_price:
+          type: number
+        volume:
+          type: integer
+        value:
+          type: number
+        frequency:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

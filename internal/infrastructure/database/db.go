@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Config holds database configuration
@@ -14,22 +14,20 @@ type Config struct {
 	User     string
 	Password string
 	DBName   string
-	SSLMode  string
 }
 
 // NewConnection creates a new database connection
 func NewConnection(config *Config) (*sql.DB, error) {
-	connStr := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		config.Host,
-		config.Port,
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		config.User,
 		config.Password,
+		config.Host,
+		config.Port,
 		config.DBName,
-		config.SSLMode,
 	)
 
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
@@ -48,7 +46,7 @@ func NewConnection(config *Config) (*sql.DB, error) {
 
 // NewConnectionFromURL creates a new database connection from URL
 func NewConnectionFromURL(databaseURL string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", databaseURL)
+	db, err := sql.Open("mysql", databaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}

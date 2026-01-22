@@ -6,51 +6,29 @@ import (
 	"api-web-scrapping/internal/presentation/handlers"
 )
 
-func SetupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, stockPriceSummaryHandler *handlers.StockPriceSummaryHandler) {
+func SetupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, marketDataHandler *handlers.MarketDataHandler) {
 	api := r.Group("/api/v1")
 	{
 		// Auth routes
 		auth := api.Group("/auth")
 		{
 			auth.POST("/login", authHandler.Login)
-			auth.POST("/register", authHandler.Register)
 		}
 
-		// Stock price summary routes
-		stockPrices := api.Group("/stock-prices")
+		// Market data routes (from v_latest_market_data view)
+		marketData := api.Group("/market-data")
 		{
-			// Get all stock prices with pagination
-			stockPrices.GET("", stockPriceSummaryHandler.GetAll)
+			// Get all market data from view
+			marketData.GET("", marketDataHandler.GetAll)
 
-			// Get stock price by ID
-			stockPrices.GET("/:id", stockPriceSummaryHandler.GetByID)
+			// Get latest market data for all emitens
+			marketData.GET("/latest", marketDataHandler.GetLatestByAllEmiten)
 
-			// Get stock price by symbol
-			stockPrices.GET("/symbol/:symbol", stockPriceSummaryHandler.GetBySymbol)
+			// Get market data by emiten
+			marketData.GET("/emiten/:emiten", marketDataHandler.GetByEmiten)
 
-			// Get latest stock price by symbol
-			stockPrices.GET("/symbol/:symbol/latest", stockPriceSummaryHandler.GetLatestBySymbol)
-
-			// Get stock price by symbol and date
-			stockPrices.GET("/symbol/:symbol/date/:date", stockPriceSummaryHandler.GetBySymbolAndDate)
-
-			// Get stock prices by date range
-			stockPrices.GET("/range", stockPriceSummaryHandler.GetByDateRange)
-
-			// Get stock prices by symbol and date range
-			stockPrices.GET("/symbol/:symbol/range", stockPriceSummaryHandler.GetBySymbolAndDateRange)
-
-			// Get top movers (gainers & losers) for a specific date
-			stockPrices.GET("/movers/:date", stockPriceSummaryHandler.GetTopMovers)
-
-			// Create stock price summary (admin only)
-			stockPrices.POST("", stockPriceSummaryHandler.Create)
-
-			// Update stock price summary (admin only)
-			stockPrices.PUT("/:id", stockPriceSummaryHandler.Update)
-
-			// Delete stock price summary (admin only)
-			stockPrices.DELETE("/:id", stockPriceSummaryHandler.Delete)
+			// Get latest market data by emiten
+			marketData.GET("/emiten/:emiten/latest", marketDataHandler.GetLatestByEmiten)
 		}
 	}
 

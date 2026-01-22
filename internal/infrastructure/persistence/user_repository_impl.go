@@ -37,11 +37,6 @@ func (r *InMemoryUserRepository) FindByID(ctx context.Context, id uuid.UUID) (*e
 	return user, nil
 }
 
-func (r *InMemoryUserRepository) Create(ctx context.Context, user *entities.User) error {
-	r.users[user.ID] = user
-	return nil
-}
-
 func (r *InMemoryUserRepository) Update(ctx context.Context, user *entities.User) error {
 	r.users[user.ID] = user
 	return nil
